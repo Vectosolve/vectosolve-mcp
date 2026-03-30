@@ -156,7 +156,7 @@ server.tool(
 // Tool: generate_logo
 server.tool(
   'generate_logo',
-  'Generate an SVG logo from a text description using AI (Gemini + Recraft pipeline). Costs $0.25 per logo.',
+  'Generate an SVG logo from a text description using AI. Costs $0.25 per logo.',
   {
     prompt: z.string().min(3).describe('Text description of the logo to generate'),
     style: z

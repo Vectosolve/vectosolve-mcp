@@ -67,11 +67,11 @@ Generate SVG logos from a text description.
 **Parameters:**
 - `prompt` — Text description of the logo
 - `style` — `vector_illustration`, `icon`, `line_art`, `engraving`, `line_circuit`, `linocut`
-- `model` — `recraftv3` (best quality) or `recraftv2`
+- `model` — `v3` (best quality) or `v2`
 - `colors` — Brand colors as hex array, e.g. `["#0090ff", "#1cb721"]`
 - `num_variants` — 1, 2, or 4
 
-**Cost:** $0.40 (recraftv3) or $0.25 (recraftv2) per logo
+**Cost:** $0.40 (v3) or $0.25 (v2) per logo
 
 ## Input Methods
 
