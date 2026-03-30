@@ -1,0 +1,38 @@
+{
+  "name": "@vectosolve/mcp",
+  "version": "1.0.3",
+  "description": "VectoSolve MCP Server — Use AI image tools (vectorize, remove-bg, upscale, generate-logo) from Claude Code, Cursor, and other MCP clients",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "vectosolve-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "vectosolve",
+    "claude-code",
+    "cursor",
+    "svg",
+    "vectorize",
+    "ai-tools"
+  ],
+  "author": "VectoSolve",
+  "license": "MIT",
+  "homepage": "https://vectosolve.com/developers",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "zod": "^3.23.8"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
