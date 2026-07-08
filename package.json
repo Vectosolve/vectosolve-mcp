@@ -1,6 +1,7 @@
 {
   "name": "@vectosolve/mcp",
-  "version": "1.0.3",
+  "version": "1.0.4",
+  "mcpName": "io.github.Vectosolve/mcp",
   "description": "VectoSolve MCP Server — Use AI image tools (vectorize, remove-bg, upscale, generate-logo) from Claude Code, Cursor, and other MCP clients",
   "type": "module",
   "main": "dist/index.js",
@@ -28,6 +29,7 @@
   "author": "VectoSolve",
   "license": "MIT",
   "homepage": "https://vectosolve.com/developers",
+  "repository": { "type": "git", "url": "https://github.com/Vectosolve/vectosolve-mcp.git" },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "zod": "^3.23.8"

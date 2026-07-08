@@ -1,0 +1,17 @@
+runtime: "typescript"
+startCommand:
+  type: "stdio"
+  configSchema:
+    type: "object"
+    required: ["vectosolveApiKey"]
+    properties:
+      vectosolveApiKey:
+        type: "string"
+        title: "VectoSolve API Key"
+        description: "Get one at https://vectosolve.com/developers"
+  commandFunction: |
+    (config) => ({
+      command: "npx",
+      args: ["@vectosolve/mcp"],
+      env: { VECTOSOLVE_API_KEY: config.vectosolveApiKey }
+    })
