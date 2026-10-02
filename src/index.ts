@@ -68,7 +68,7 @@ async function apiJson(
 
 const server = new McpServer({
   name: 'vectosolve',
-  version: '1.0.3',
+  version: '1.0.4',
 });
 
 // Tool: vectorize
@@ -156,7 +156,7 @@ server.tool(
 // Tool: generate_logo
 server.tool(
   'generate_logo',
-  'Generate an SVG logo from a text description using AI. Costs $0.25 per logo.',
+  'Generate an SVG logo from a text description using AI. Costs $0.40 per logo variant.',
   {
     prompt: z.string().min(3).describe('Text description of the logo to generate'),
     style: z
@@ -165,10 +165,6 @@ server.tool(
         'vector_illustration/line_art',
         'vector_illustration/engraving',
         'vector_illustration/linocut',
-        'icon',
-        'pixel_art',
-        'hand_drawn',
-        'bw',
       ])
       .optional()
       .describe('Logo style (default: vector_illustration)'),
@@ -177,7 +173,7 @@ server.tool(
       .max(5)
       .optional()
       .describe('Brand colors as RGB objects, e.g. [{"r":28,"g":183,"b":33}, {"r":0,"g":144,"b":255}]'),
-    num_variants: z.union([z.literal(1), z.literal(2), z.literal(4)]).optional().describe('Number of logo variants (1, 2, or 4)'),
+    num_variants: z.union([z.literal(1), z.literal(2), z.literal(4)]).optional().describe('Number of logo variants (1, 2, or 4). Each variant is billed.'),
   },
   async ({ prompt, style, colors, num_variants }) => {
     if (!API_KEY) return { content: [{ type: 'text' as const, text: 'Error: VECTOSOLVE_API_KEY not set.' }] };
@@ -185,22 +181,23 @@ server.tool(
     const body: Record<string, unknown> = { prompt };
     if (style) body.style = style;
     if (colors) body.colors = colors;
-    if (num_variants) body.numVariants = num_variants;
+    if (num_variants) body.num_variants = num_variants;
 
     const result = await apiJson('/generate-logo', body);
     if (!(result as { success?: boolean }).success) {
       return { content: [{ type: 'text' as const, text: `Error: ${(result as { error?: string }).error || 'Unknown error'}` }] };
     }
 
-    const logos = (result as { logos?: Array<{ url: string }> }).logos || [];
-    const credits = result.credits as { cost: number; remaining: number };
+    const data = result.data as { logos: Array<{ svg_url: string; svg: string | null }>; processing_time_ms: number };
+    const logos = data?.logos || [];
+    const credits = result.credits as { used: number; remaining: number };
 
     const content: Array<{ type: 'text'; text: string }> = [
-      { type: 'text' as const, text: `${logos.length} logo(s) generated ($${credits.cost} used, $${credits.remaining.toFixed(2)} remaining)` },
+      { type: 'text' as const, text: `${logos.length} logo(s) generated in ${data?.processing_time_ms ?? '?'}ms (${credits.used} credits used, ${credits.remaining} remaining)` },
     ];
 
     for (let i = 0; i < logos.length; i++) {
-      content.push({ type: 'text' as const, text: `--- Logo ${i + 1} ---\nSVG URL: ${logos[i].url}` });
+      content.push({ type: 'text' as const, text: `--- Logo ${i + 1} ---\nSVG URL: ${logos[i].svg_url}${logos[i].svg ? `\n${logos[i].svg}` : ''}` });
     }
 
     return { content };

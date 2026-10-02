@@ -2,6 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.Vectosolve/mcp",
   "description": "Image-to-SVG for makers: vectorize, remove background, upscale, and generate SVG logos from Claude/Cursor. Outputs cut-ready vectors for laser, Cricut, CNC and DXF workflows.",
+  "websiteUrl": "https://vectosolve.com/developers",
   "repository": {
     "url": "https://github.com/Vectosolve/vectosolve-mcp",
     "source": "github"
@@ -12,11 +13,13 @@
       "registryType": "npm",
       "identifier": "@vectosolve/mcp",
       "version": "1.0.4",
-      "transport": { "type": "stdio" },
+      "transport": {
+        "type": "stdio"
+      },
       "environmentVariables": [
         {
           "name": "VECTOSOLVE_API_KEY",
-          "description": "Your VectoSolve API key from https://vectosolve.com/developers",
+          "description": "Your VectoSolve API key (starts with vs_) from https://vectosolve.com/developers",
           "isRequired": true,
           "isSecret": true,
           "format": "string"

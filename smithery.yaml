@@ -1,17 +1,23 @@
-runtime: "typescript"
+# Smithery config for @vectosolve/mcp
+# Local (stdio) deployment: Smithery launches the published npm package via npx.
+# No `runtime:` key — that key is only for Smithery-hosted TypeScript/container builds.
+# Docs: https://smithery.ai/docs/build/project-config/smithery.yaml
 startCommand:
-  type: "stdio"
+  type: stdio
   configSchema:
-    type: "object"
-    required: ["vectosolveApiKey"]
+    type: object
+    required:
+      - vectosolveApiKey
     properties:
       vectosolveApiKey:
-        type: "string"
-        title: "VectoSolve API Key"
-        description: "Get one at https://vectosolve.com/developers"
+        type: string
+        title: VectoSolve API Key
+        description: Your VectoSolve API key (starts with vs_). Get one at https://vectosolve.com/developers
   commandFunction: |
     (config) => ({
       command: "npx",
-      args: ["@vectosolve/mcp"],
+      args: ["-y", "@vectosolve/mcp"],
       env: { VECTOSOLVE_API_KEY: config.vectosolveApiKey }
     })
+exampleConfig:
+  vectosolveApiKey: vs_your_api_key_here

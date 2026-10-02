@@ -52,7 +52,7 @@ async function apiJson(endpoint, body) {
 // ── MCP Server ──
 const server = new McpServer({
     name: 'vectosolve',
-    version: '1.0.3',
+    version: '1.0.4',
 });
 // Tool: vectorize
 server.tool('vectorize', 'Convert a raster image (PNG, JPG, WebP) to clean SVG vector format using AI. Costs $0.20 per image.', {
@@ -113,7 +113,7 @@ server.tool('upscale', 'Upscale an image to higher resolution using AI. Costs $0
     };
 });
 // Tool: generate_logo
-server.tool('generate_logo', 'Generate an SVG logo from a text description using AI. Costs $0.25 per logo.', {
+server.tool('generate_logo', 'Generate an SVG logo from a text description using AI. Costs $0.40 per logo variant.', {
     prompt: z.string().min(3).describe('Text description of the logo to generate'),
     style: z
         .enum([
@@ -121,10 +121,6 @@ server.tool('generate_logo', 'Generate an SVG logo from a text description using
         'vector_illustration/line_art',
         'vector_illustration/engraving',
         'vector_illustration/linocut',
-        'icon',
-        'pixel_art',
-        'hand_drawn',
-        'bw',
     ])
         .optional()
         .describe('Logo style (default: vector_illustration)'),
@@ -133,7 +129,7 @@ server.tool('generate_logo', 'Generate an SVG logo from a text description using
         .max(5)
         .optional()
         .describe('Brand colors as RGB objects, e.g. [{"r":28,"g":183,"b":33}, {"r":0,"g":144,"b":255}]'),
-    num_variants: z.union([z.literal(1), z.literal(2), z.literal(4)]).optional().describe('Number of logo variants (1, 2, or 4)'),
+    num_variants: z.union([z.literal(1), z.literal(2), z.literal(4)]).optional().describe('Number of logo variants (1, 2, or 4). Each variant is billed.'),
 }, async ({ prompt, style, colors, num_variants }) => {
     if (!API_KEY)
         return { content: [{ type: 'text', text: 'Error: VECTOSOLVE_API_KEY not set.' }] };
@@ -143,18 +139,19 @@ server.tool('generate_logo', 'Generate an SVG logo from a text description using
     if (colors)
         body.colors = colors;
     if (num_variants)
-        body.numVariants = num_variants;
+        body.num_variants = num_variants;
     const result = await apiJson('/generate-logo', body);
     if (!result.success) {
         return { content: [{ type: 'text', text: `Error: ${result.error || 'Unknown error'}` }] };
     }
-    const logos = result.logos || [];
+    const data = result.data;
+    const logos = data?.logos || [];
     const credits = result.credits;
     const content = [
-        { type: 'text', text: `${logos.length} logo(s) generated ($${credits.cost} used, $${credits.remaining.toFixed(2)} remaining)` },
+        { type: 'text', text: `${logos.length} logo(s) generated in ${data?.processing_time_ms ?? '?'}ms (${credits.used} credits used, ${credits.remaining} remaining)` },
     ];
     for (let i = 0; i < logos.length; i++) {
-        content.push({ type: 'text', text: `--- Logo ${i + 1} ---\nSVG URL: ${logos[i].url}` });
+        content.push({ type: 'text', text: `--- Logo ${i + 1} ---\nSVG URL: ${logos[i].svg_url}${logos[i].svg ? `\n${logos[i].svg}` : ''}` });
     }
     return { content };
 });
