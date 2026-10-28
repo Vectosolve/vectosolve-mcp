@@ -2,6 +2,24 @@
 
 [VectoSolve](https://vectosolve.com) MCP Server — use AI image tools (vectorize, remove background, upscale, generate logos) directly from Claude Code, Cursor, Windsurf, and other MCP-compatible clients.
 
+## Hosted remote server (no API key)
+
+VectoSolve also runs a public remote MCP server at `https://vectosolve.com/api/mcp` (Streamable HTTP, no sign-in, no API key). It exposes one read-only tool, `vectorize`: give it a public link to a PNG, JPG, WebP or GIF image and it returns a PNG preview and the complete file as SVG, DXF (R12, millimetres, for laser cutters, CNC routers and CAD) or EPS. Modes: `standard`, `laser`, `cricut`, `centerline`.
+
+Add it as a custom connector in Claude, or in any client that supports remote servers:
+
+```json
+{
+  "mcpServers": {
+    "vectosolve": { "type": "http", "url": "https://vectosolve.com/api/mcp" }
+  }
+}
+```
+
+Documentation: [vectosolve.com/integrations/mcp](https://vectosolve.com/integrations/mcp). Official MCP Registry name: `io.github.Vectosolve/vectosolve`.
+
+The npm package below is the local stdio server, which uses your own API key and adds background removal, upscaling and logo generation.
+
 ## Quick Setup
 
 Add to your MCP client config (e.g. `.mcp.json` or Claude Code settings):
@@ -102,7 +120,7 @@ Purchase credits or subscribe at [vectosolve.com/pricing](https://vectosolve.com
 
 This server is listed on:
 
-- [MCP Registry](https://registry.modelcontextprotocol.io) (official) — `io.github.Vectosolve/mcp`
+- [MCP Registry](https://registry.modelcontextprotocol.io) (official) — `io.github.Vectosolve/mcp`; hosted remote server: `io.github.Vectosolve/vectosolve`
 - [Glama](https://glama.ai/mcp/servers)
 - [Smithery](https://smithery.ai)
 
